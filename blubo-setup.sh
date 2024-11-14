@@ -99,18 +99,10 @@ sudo apt-get update
 sudo apt-get install tailscale -y
 
 # Mensaje para completar el registro de Tailscale
-read -p "Visita la URL proporcionada por Tailscale para registrar tu dispositivo y escribe 'Y' cuando estés listo: " ready
+read -p "A continuación, visite la URL proporcionada por Tailscale para registrar tu dispositivo. Presione 'Y' para continuar: " ready
 if [ "$ready" == "Y" ] || [ "$ready" == "y" ]; then
     sudo tailscale up --accept-dns=false
 fi
-
-# Sugerencia de solución para problema de DNS con Tailscale
-echo "Para solucionar problemas de DNS con Tailscale, realiza los siguientes pasos:"
-echo "1. Abre el archivo de configuración de DNS: sudo nano /etc/systemd/resolved.conf"
-echo "2. Modifica la sección [Resolve] para incluir los siguientes servidores DNS:"
-echo "   DNS=8.8.8.8 8.8.4.4"
-echo "3. Guarda y cierra el archivo."
-echo "4. Reinicia el servicio de resolución de DNS con: sudo systemctl restart systemd-resolved"
 
 # Instalación de FTP Server
 echo "Instalando servidor FTP (proftpd)..."
