@@ -3,4 +3,13 @@
 
 *How to setup*:
 
-1. On a clean installation of Raspbian 11 Bullseye, run the blubo-setup.sh file to download all the necessary libraries.
+1. On a clean installation of Raspbian 11 Bullseye, install Git and download the repo.
+2. After the installation is complete, you must set the file as an executable as follows:
+
+Open terminal and run the following code:
+
+chmod +x lib_blubo.sh
+
+./lib_blubo.sh
+
+3. Follow the instructions in the script.
