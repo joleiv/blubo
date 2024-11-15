@@ -99,7 +99,7 @@ sudo apt-get update
 sudo apt-get install tailscale -y
 
 # Mensaje para completar el registro de Tailscale
-read -p "A continuación, visite la URL proporcionada por Tailscale para registrar tu dispositivo. Presione 'Y' para continuar: " ready
+read -p "Visita la URL proporcionada por Tailscale para registrar tu dispositivo y escribe 'Y' cuando estés listo: " ready
 if [ "$ready" == "Y" ] || [ "$ready" == "y" ]; then
     sudo tailscale up --accept-dns=false
 fi
