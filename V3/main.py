@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from config_manager import ConfigManager
 from servo_controller import PigpioServoController
 from ads_reader import ADSReader
