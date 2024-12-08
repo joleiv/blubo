@@ -116,5 +116,31 @@ sudo nano /etc/proftpd/proftpd.conf
 echo "Recargando el servicio FTP..."
 sudo service proftpd reload
 
+# Configuración del RTC
+echo "Configurando el RTC..."
+if ! grep -q "^dtoverlay=i2c-rtc,ds1307" /boot/config.txt; then
+    echo "Agregando dtoverlay=i2c-rtc,ds1307 a /boot/config.txt..."
+    echo "dtoverlay=i2c-rtc,ds1307" | sudo tee -a /boot/config.txt
+    echo "Overlay agregado. Se requiere reiniciar."
+    echo "Por favor, reinicia la Raspberry Pi y vuelve a ejecutar este script."
+    exit 0
+fi
+
+echo "dtoverlay=i2c-rtc,ds1307 ya está configurado. Continuando..."
+echo "Eliminando fake-hwclock..."
+sudo apt-get remove -y fake-hwclock
+sudo update-rc.d -f fake-hwclock remove
+
+echo "Habilitando sincronización NTP..."
+sudo timedatectl set-ntp true
+
+echo "Escribiendo la hora del sistema en el RTC..."
+sudo hwclock -w
+
+echo "Leyendo la hora del RTC..."
+sudo hwclock -r
+
+echo "Verifica si la hora del RTC es correcta. Configuración completada."
+
 # Mensaje final
 echo "####Reinicia la Raspberry####"
