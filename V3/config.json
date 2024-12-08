@@ -5,8 +5,8 @@
   "data_supplier": "MiProveedor",
   "location_name": "MiUbicacion",
   "position": "MiPosicion",
-  "angle_closed": 92,
-  "angle_open": 37,
+  "angle_closed": 37,
+  "angle_open": 92,
   "error_patterns": {
     "device_on": [[30, 0.2], [0, 0.2], [30, 0.2]],
     "error_1": [[90, 0.5], [0, 0.5]],
