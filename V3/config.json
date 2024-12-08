@@ -1,0 +1,10 @@
+{
+  "time_to_close_start": "08:00:00",
+  "time_to_close_end": "17:30:00",
+  "servo_pin": 13,
+  "data_supplier": "MiProveedor",
+  "location_name": "MiUbicacion",
+  "position": "MiPosicion",
+  "angle_closed": 92,
+  "angle_open": 37
+}
