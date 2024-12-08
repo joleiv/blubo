@@ -116,31 +116,52 @@ sudo nano /etc/proftpd/proftpd.conf
 echo "Recargando el servicio FTP..."
 sudo service proftpd reload
 
-# Configuración del RTC
-echo "Configurando el RTC..."
-if ! grep -q "^dtoverlay=i2c-rtc,ds1307" /boot/config.txt; then
-    echo "Agregando dtoverlay=i2c-rtc,ds1307 a /boot/config.txt..."
-    echo "dtoverlay=i2c-rtc,ds1307" | sudo tee -a /boot/config.txt
-    echo "Overlay agregado. Se requiere reiniciar."
-    echo "Por favor, reinicia la Raspberry Pi y vuelve a ejecutar este script."
-    exit 0
+# Configuración de autoejecución de main.py
+echo "Configurando autoejecución de main.py al inicio..."
+
+# Detectar el directorio del usuario
+USER_DIR=$(ls /home | grep blubo[0-9]*)
+MAIN_PY_PATH="/home/$USER_DIR/blubo/V3/main.py"
+
+# Verificar si el archivo main.py existe
+if [ ! -f "$MAIN_PY_PATH" ]; then
+    echo "El archivo main.py no se encuentra en $MAIN_PY_PATH."
+    echo "Verifica la ubicación e intenta nuevamente."
+    exit 1
 fi
 
-echo "dtoverlay=i2c-rtc,ds1307 ya está configurado. Continuando..."
-echo "Eliminando fake-hwclock..."
-sudo apt-get remove -y fake-hwclock
-sudo update-rc.d -f fake-hwclock remove
+# Crear el archivo del servicio de Systemd
+echo "Creando servicio para ejecutar main.py al inicio..."
+sudo bash -c "cat <<EOF > /etc/systemd/system/mainpy.service
+[Unit]
+Description=Ejecutar main.py al inicio
+After=network.target
 
-echo "Habilitando sincronización NTP..."
-sudo timedatectl set-ntp true
+[Service]
+ExecStart=/usr/bin/python3 $MAIN_PY_PATH
+WorkingDirectory=/home/$USER_DIR/blubo/V3
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=$USER
+Environment=PYTHONUNBUFFERED=1
 
-echo "Escribiendo la hora del sistema en el RTC..."
-sudo hwclock -w
+[Install]
+WantedBy=multi-user.target
+EOF"
 
-echo "Leyendo la hora del RTC..."
-sudo hwclock -r
+# Recargar Systemd y habilitar el servicio
+echo "Recargando Systemd y habilitando el servicio..."
+sudo systemctl daemon-reload
+sudo systemctl enable mainpy.service
 
-echo "Verifica si la hora del RTC es correcta. Configuración completada."
+# Iniciar el servicio
+echo "Iniciando el servicio main.py..."
+sudo systemctl start mainpy.service
+
+# Verificar el estado del servicio
+echo "Verificando el estado del servicio..."
+sudo systemctl status mainpy.service
 
 # Mensaje final
 echo "####Reinicia la Raspberry####"
