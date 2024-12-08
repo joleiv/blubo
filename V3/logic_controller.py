@@ -22,6 +22,9 @@ class LogicController:
         self.angle_closed = self.config.get("angle_closed", 92)
         self.angle_open = self.config.get("angle_open", 37)
 
+        # Estado interno del servo
+        self.current_servo_angle = None
+
     def is_time_to_close(self):
         now = datetime.now().time()
         start_time = datetime.strptime(self.time_to_close_start, "%H:%M:%S").time()
@@ -31,6 +34,7 @@ class LogicController:
     def run(self):
         # Al iniciar, podemos reproducir un patrón (por ejemplo "device_on")
         self.servo_pattern_player.play("device_on")
+        time.sleep(5)
 
         while True:
             try:
@@ -44,11 +48,16 @@ class LogicController:
                 # Escritura en archivos
                 self.file_writer.write_data(timestamp, values)
 
-                # Control del servo según la hora usando valores del config
+                # Determinar el ángulo deseado según la hora
                 if self.is_time_to_close():
-                    self.servo.set_servo_angle(self.angle_closed)
+                    desired_angle = self.angle_closed
                 else:
-                    self.servo.set_servo_angle(self.angle_open)
+                    desired_angle = self.angle_open
+
+                # Cambiar el ángulo del servo sólo si es diferente al actual
+                if self.current_servo_angle != desired_angle:
+                    self.servo.set_servo_angle(desired_angle)
+                    self.current_servo_angle = desired_angle
 
                 time.sleep(1)
 
