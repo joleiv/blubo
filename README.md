@@ -9,8 +9,10 @@ git clone https://github.com/joleiv/blubo.git
 ```
 2. After the installation is complete, you must set the file as an executable. Open terminal and run the following code:
 ````
-chmod +x lib_blubo.sh
+cd blubo
 
-./lib_blubo.sh
+chmod +x blubo-setup.sh
+
+./blubo-setup.sh
 ````
 3. Follow the instructions in the script.
